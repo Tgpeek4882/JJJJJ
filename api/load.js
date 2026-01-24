@@ -5,11 +5,6 @@ export default async function handler(req, res) {
         return res.status(405).send("print('Method Not Allowed')");
     }
 
-    const userAgent = req.headers['user-agent'] || "";
-    if (!userAgent.includes("Roblox")) {
-        return res.status(403).send("print('Access Denied.')");
-    }
-
     const { auth_key, file } = req.body;
     if (auth_key !== "MainDomainCall") {
         return res.status(401).send("print('Invalid Authentication Key')");
