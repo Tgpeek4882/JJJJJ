@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).send("print('Method Not Allowed')");
 
-    const SECRET_KEY = process.env.AZURE_AUTH; 
+    const SECRET_KEY = process.env.AUTH_KEY; 
     const GITHUB_TOKEN = process.env.GH_TOKEN;
 
     const { auth_key, file } = req.body;
