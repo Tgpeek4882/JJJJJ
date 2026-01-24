@@ -1,24 +1,28 @@
 const fetch = require('node-fetch');
 
 export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).send("print('Method Not Allowed')");
+    }
+
     const userAgent = req.headers['user-agent'] || "";
     if (!userAgent.includes("Roblox")) {
-        return res.status(403).send("Access Denied.");
+        return res.status(403).send("print('Access Denied.')");
+    }
+
+    const { auth_key, file } = req.body;
+    if (auth_key !== "MainDomainCall") {
+        return res.status(401).send("print('Invalid Authentication Key')");
     }
 
     const GITHUB_TOKEN = process.env.GH_TOKEN;
-    const fileName = req.query.file || "init.lua"; 
+    const fileName = file || "init.lua"; 
     
-    const PRIVATE_URL = `https://raw.githubusercontent.com/Tgpeek4882/fffff/refs/heads/main/${fileName}`;
-
-    const response = await fetch(PRIVATE_URL, {
-        headers: {
-            'Authorization': `token ${GITHUB_TOKEN}`,
-            'Accept': 'application/vnd.github.v3.raw'
-        }
+    const response = await fetch(`https://raw.githubusercontent.com/Tgpeek4882/fffff/main/${fileName}`, {
+        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
     });
 
-    if (!response.ok) return res.status(500).send("Source error or File not found.");
+    if (!response.ok) return res.status(500).send("print('Source Error')");
 
     const code = await response.text();
     res.setHeader('Content-Type', 'text/plain');
