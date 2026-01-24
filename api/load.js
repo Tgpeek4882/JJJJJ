@@ -7,7 +7,9 @@ export default async function handler(req, res) {
     }
 
     const GITHUB_TOKEN = process.env.GH_TOKEN;
-    const PRIVATE_URL = "https://raw.githubusercontent.com/Tgpeek4882/fffff/refs/heads/main/";
+    const fileName = req.query.file || "init.lua"; 
+    
+    const PRIVATE_URL = `https://raw.githubusercontent.com/Tgpeek4882/fffff/main/${fileName}`;
 
     const response = await fetch(PRIVATE_URL, {
         headers: {
@@ -16,7 +18,7 @@ export default async function handler(req, res) {
         }
     });
 
-    if (!response.ok) return res.status(500).send("Source error.");
+    if (!response.ok) return res.status(500).send("Source error or File not found.");
 
     const code = await response.text();
     res.setHeader('Content-Type', 'text/plain');
