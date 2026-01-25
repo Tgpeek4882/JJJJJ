@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') return res.status(405).send("print('Method Not Allowed')");
+    if (req.method !== 'POST') return res.status(405).send("Method Not Allowed");
 
     const SECRET_KEY = process.env.AUTH_KEY; 
     const GITHUB_TOKEN = process.env.GH_TOKEN;
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
     if (auth_key !== SECRET_KEY) {
         console.warn("Crack attempt blocked.");
-        return res.status(401).send("print('Invalid Auth')");
+        return res.status(401).send("Invalid Auth");
     }
 
     const fileName = file || "init.lua";
