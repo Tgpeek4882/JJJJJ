@@ -11,30 +11,36 @@ export default async function handler(req, res) {
             <head>
                 <title>Azure Hub | Access Denied</title>
                 <style>
-                    body { background: #050505; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-                    .card { background: #111; padding: 30px; border-radius: 8px; border: 1px solid #222; width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-                    h1 { color: #ff3e3e; margin: 0 0 10px; font-size: 22px; }
-                    p { color: #666; font-size: 13px; margin-bottom: 20px; }
+                    body { background: #050505; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+                    .card { background: #111; padding: 30px; border-radius: 8px; border: 1px solid #222; width: 450px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+                    h1 { color: #ff3e3e; margin: 0 0 10px; font-size: 24px; }
+                    p { color: #888; font-size: 14px; margin-bottom: 20px; }
                     .code-box { position: relative; background: #000; border: 1px solid #333; padding: 15px; border-radius: 4px; text-align: left; }
-                    code { font-family: monospace; color: #00ff88; font-size: 12px; word-break: break-all; }
-                    .copy { position: absolute; top: 10px; right: 10px; cursor: pointer; opacity: 0.5; transition: 0.2s; }
+                    .scroll-container { max-height: 120px; overflow-y: auto; padding-right: 25px; }
+                    .scroll-container::-webkit-scrollbar { width: 4px; }
+                    .scroll-container::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+                    code { font-family: 'Consolas', 'Monaco', monospace; color: #00ff88; font-size: 13px; white-space: pre-wrap; word-break: break-all; display: block; line-height: 1.5; }
+                    .copy { position: absolute; top: 12px; right: 12px; cursor: pointer; opacity: 0.6; transition: 0.2s; background: #000; }
                     .copy:hover { opacity: 1; }
                 </style>
             </head>
             <body>
                 <div class="card">
                     <h1>Access Denied</h1>
-                    <p>Authentication required via POST request.</p>
+                    <p>Execute the script below.</p>
                     <div class="code-box">
-                        <code id="c">${loaderCode}</code>
+                        <div class="scroll-container">
+                            <code id="c">getgenv().SCRIPT_KEY = "YOUR_KEY"<br>loadstring(game:HttpGet('https://raw.githubusercontent.com/azurelw/azurehub/refs/heads/main/loader.lua'))()</code>
+                        </div>
                         <div class="copy" onclick="copy()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                         </div>
                     </div>
                 </div>
                 <script>
                     function copy() {
-                        navigator.clipboard.writeText(document.getElementById('c').innerText);
+                        const text = document.getElementById('c').innerText;
+                        navigator.clipboard.writeText(text);
                         let b = document.querySelector('.card');
                         b.style.borderColor = '#00ff88';
                         setTimeout(() => b.style.borderColor = '#222', 1000);
