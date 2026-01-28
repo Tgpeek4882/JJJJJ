@@ -2,17 +2,21 @@
 const fetch = require('node-fetch');
 
 export default async function handler(req, res) {
-    if (req.method !== 'POST') return res.status(405).send("Not Allowed");
+    if (req.method !== 'POST') return res.status(200).send("OK");
 
-    const { auth_key, message, username, executor } = req.body;
+    const { v, k, u, e } = req.body;
 
-    if (auth_key !== process.env.AUTH_KEY) {
-        return res.status(401).send("Unauthorized");
+    if (k !== process.env.AUTH_KEY) {
+        return res.status(401).send("Auth Failed");
     }
 
-    const decodedMessage = message.match(/.{1,2}/g)
-        .map(byte => String.fromCharCode(parseInt(byte, 16)))
-        .join('');
+    const decodeHex = (hex) => {
+        return hex.match(/.{1,2}/g).map(byte => String.fromCharCode(parseInt(byte, 16))).join('');
+    };
+
+    const decodedMessage = decodeHex(v);
+    const decodedUser = decodeHex(u);
+    const decodedExec = decodeHex(e);
 
     const payload = {
         username: "Crack Attempt Detected",
@@ -20,7 +24,7 @@ export default async function handler(req, res) {
             title: "Security Alert",
             description: decodedMessage,
             color: 0xff3e3e,
-            footer: { text: `User: ${username} | Executor: ${executor}` },
+            footer: { text: `User: ${decodedUser} | Executor: ${decodedExec}` },
             timestamp: new Date()
         }]
     };
@@ -31,5 +35,5 @@ export default async function handler(req, res) {
         body: JSON.stringify(payload)
     });
 
-    return res.status(200).send("Logged");
+    return res.status(200).send("Sync Complete");
 }
