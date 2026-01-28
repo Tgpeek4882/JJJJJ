@@ -11,22 +11,24 @@ export default async function handler(req, res) {
         return res.status(401).send("Unauthorized");
     }
 
+    const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
+
     const payload = {
         username: "Crack Attempt Detected",
         embeds: [{
             title: "Security Alert",
-            description: message,
+            description: decodedMessage,
             color: 0xff3e3e,
             footer: { text: `User: ${username} | Executor: ${executor}` },
             timestamp: new Date()
         }]
     };
 
-    const response = await fetch(DISCORD_WEBHOOK, {
+    await fetch(DISCORD_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
 
-    return res.status(response.status).send("Cracker Logged");
+    return res.status(200).send("Logged");
 }
