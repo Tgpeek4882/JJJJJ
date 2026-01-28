@@ -4,14 +4,15 @@ const fetch = require('node-fetch');
 export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).send("Not Allowed");
 
-    const DISCORD_WEBHOOK = process.env.LOG_WEBHOOK;
     const { auth_key, message, username, executor } = req.body;
 
     if (auth_key !== process.env.AUTH_KEY) {
         return res.status(401).send("Unauthorized");
     }
 
-    const decodedMessage = Buffer.from(message, 'base64').toString('utf-8');
+    const decodedMessage = message.match(/.{1,2}/g)
+        .map(byte => String.fromCharCode(parseInt(byte, 16)))
+        .join('');
 
     const payload = {
         username: "Crack Attempt Detected",
@@ -24,7 +25,7 @@ export default async function handler(req, res) {
         }]
     };
 
-    await fetch(DISCORD_WEBHOOK, {
+    await fetch(process.env.LOG_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
