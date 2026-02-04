@@ -1,4 +1,5 @@
 // yo skid, if you're thai or vietnam your mum is a fucking whore bitch.
+// if you can crack this il give you 20$. send me source of any my scripts and ping owner in discord.gg/azurehub
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
