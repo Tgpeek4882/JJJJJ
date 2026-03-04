@@ -1,5 +1,3 @@
-// hi from isotopia
-// test111
 export default {
     async fetch(request, env, ctx) {
         const userAgent = request.headers.get("User-Agent") || ""
@@ -7,10 +5,9 @@ export default {
             return new Response("Forbidden", { status: 403 })
         }
 
-        const cache = caches.default
-        let response = await cache.match(request)
-        if (response) {
-            return response
+        const authKey = request.headers.get("AUTH_KEY")
+        if (!authKey || authKey !== env.AUTH_KEY) {
+            return new Response("Unauthorized", { status: 401 })
         }
 
         const githubResponse = await fetch(
@@ -24,14 +21,10 @@ export default {
 
         const text = await githubResponse.text()
 
-        response = new Response(text, {
+        return new Response(text, {
             headers: {
-                "Cache-Control": "public, max-age=3600",
                 "Content-Type": "text/plain"
             }
         })
-
-        ctx.waitUntil(cache.put(request, response.clone()))
-        return response
     }
 }
